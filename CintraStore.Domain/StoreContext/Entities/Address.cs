@@ -1,11 +1,9 @@
 ﻿using CintraStore.Domain.StoreContext.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using FluentValidator;
 
 namespace CintraStore.Domain.StoreContext.Entities
 {
-    public class Address
+    public class Address : Notifiable
     {
         public Address(string street, 
                        string number, 

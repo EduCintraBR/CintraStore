@@ -1,11 +1,12 @@
 ﻿using CintraStore.Domain.StoreContext.Enums;
+using FluentValidator;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CintraStore.Domain.StoreContext.Entities
 {
-    public class Delivery
+    public class Delivery : Notifiable
     {
         public Delivery(int days)
         {

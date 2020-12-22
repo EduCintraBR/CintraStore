@@ -1,11 +1,12 @@
 ﻿using CintraStore.Domain.StoreContext.Enums;
+using FluentValidator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CintraStore.Domain.StoreContext.Entities
 {
-    public class Order
+    public class Order : Notifiable
     {
         private readonly IList<OrderItem> _items;
         private readonly IList<Delivery> _deliveries;
@@ -28,10 +29,12 @@ namespace CintraStore.Domain.StoreContext.Entities
         public IReadOnlyCollection<Delivery> Deliveries => _deliveries.ToArray();
 
         // To Add An Item In Order
-        public void AddItem(OrderItem item)
+        public void AddItem(Product product, decimal quantity)
         {
-            // Valid Item
-            // Add Item
+            if (product.QuantityOnHands < quantity)
+                AddNotification("Quantity", $"Product {product.Title} doesn't have {quantity} items in stock");
+
+            var item = new OrderItem(product, quantity);
             _items.Add(item);
         }
 
@@ -40,13 +43,14 @@ namespace CintraStore.Domain.StoreContext.Entities
         {
             // Generate the Order Number
             this.Number = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 6).ToUpper();
+            if (_items.Count == 0)
+                AddNotification("Order", "This order doesn't have any item");
         }
 
         // To pay An Order
         public void PayOrder() 
         {
             this.Status = EOrderStatus.Paid;
-            
         }
 
         // To send An Order
@@ -60,6 +64,7 @@ namespace CintraStore.Domain.StoreContext.Entities
             {
                 if (count == 5)
                 {
+                    count = 1;
                     deliveries.Add(new Delivery(7));
                 }
                 count++;

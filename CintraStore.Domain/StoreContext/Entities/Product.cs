@@ -1,6 +1,9 @@
-﻿namespace CintraStore.Domain.StoreContext.Entities
+﻿using FluentValidator;
+using FluentValidator.Validation;
+
+namespace CintraStore.Domain.StoreContext.Entities
 {
-    public class Product
+    public class Product : Notifiable
     {
         public Product(string title, string description, string image, decimal price, decimal quantityOnHand)
         {
@@ -20,6 +23,17 @@
         public override string ToString()
         {
             return this.Title;
+        }
+
+        public void Validate()
+        {
+            AddNotifications(new ValidationContract().Requires()
+                .HasMinLen(this.Title, 3, "Title", "The Title must have at least 3 characters")
+                .HasMaxLen(this.Title, 80, "Title", "The Title must have the maximum of 80 characters")
+                .HasMinLen(this.Description, 3, "Title", "The Description must have at least 3 characters")
+                .HasMaxLen(this.Description, 250, "Title", "The Description must have the maximum of 250 characters")
+                .IsGreaterThan(this.Price, 0, "Price", "Price must be greater than zero"));
+
         }
     }
 }

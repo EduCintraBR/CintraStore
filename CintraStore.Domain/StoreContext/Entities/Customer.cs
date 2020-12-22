@@ -1,10 +1,11 @@
 ﻿using CintraStore.Domain.StoreContext.ValueObjects;
+using FluentValidator;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CintraStore.Domain.StoreContext.Entities
 {
-    public class Customer
+    public class Customer : Notifiable
     {
         private readonly IList<Address> _addresses;
 
