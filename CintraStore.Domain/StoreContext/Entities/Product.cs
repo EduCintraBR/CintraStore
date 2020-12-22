@@ -20,9 +20,9 @@ namespace CintraStore.Domain.StoreContext.Entities
         public decimal Price { get; private set; }
         public decimal QuantityOnHands { get; private set; }
 
-        public override string ToString()
+        public void DecreaseQuantity(decimal quantity)
         {
-            return this.Title;
+            this.QuantityOnHands -= quantity;
         }
 
         public void Validate()
@@ -34,6 +34,11 @@ namespace CintraStore.Domain.StoreContext.Entities
                 .HasMaxLen(this.Description, 250, "Title", "The Description must have the maximum of 250 characters")
                 .IsGreaterThan(this.Price, 0, "Price", "Price must be greater than zero"));
 
+        }
+
+        public override string ToString()
+        {
+            return this.Title;
         }
     }
 }

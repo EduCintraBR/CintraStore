@@ -9,6 +9,11 @@ namespace CintraStore.Domain.StoreContext.Entities
             this.Product = product;
             this.Quantity = quantity;
             this.Price = product.Price;
+
+            if (product.QuantityOnHands < quantity)
+                AddNotification("Quantity", $"Product {product.Title} doesn't have {quantity} items in stock");
+
+            product.DecreaseQuantity(quantity);
         }
 
         public Product Product { get; set; }
