@@ -3,6 +3,8 @@ using CintraStore.Domain.StoreContext.Queries;
 using CintraStore.Domain.StoreContext.Repositories;
 using CintraStore.Infra.StoreContext.DataContexts;
 using Dapper;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -37,6 +39,26 @@ namespace CintraStore.Infra.StoreContext.Repositories
                         commandType: CommandType.StoredProcedure).FirstOrDefault();
         }
 
+        public List<ListCustomerQueryResult> Get()
+        {
+            return this._context
+                    .Connection
+                    .Query<ListCustomerQueryResult>(
+                        "spGetAllCustomerList",
+                        new { },
+                        commandType: CommandType.StoredProcedure).ToList();
+        }
+
+        public GetCustomerQueryResult GetById(Guid id)
+        {
+            return this._context
+                    .Connection
+                    .Query<GetCustomerQueryResult>(
+                        "spGetByIdCustomerList",
+                        new { Id = id },
+                        commandType: CommandType.StoredProcedure).FirstOrDefault();
+        }
+
         public CustomerOrdersCountResult GetCustomerOrdersCountResult(string document)
         {
             return this._context
@@ -47,16 +69,26 @@ namespace CintraStore.Infra.StoreContext.Repositories
                         commandType: CommandType.StoredProcedure).FirstOrDefault();
         }
 
+        public List<ListCustomerOrdersQueryResult> GetOrders(Guid id)
+        {
+            return this._context
+                    .Connection
+                    .Query<ListCustomerOrdersQueryResult>(
+                        "spGetOrdersCount",
+                        new { Id = id },
+                        commandType: CommandType.StoredProcedure).ToList();
+        }
+
         public void Save(Customer customer)
         {
             this._context.Connection.Execute("spCreateCustomer",
                 new
                 {
                     Íd = customer.Id,
-                    FirstName = customer.Name,
+                    FirstName = customer.Name.FirstName,
                     LastName = customer.Name.LastName,
                     Document = customer.Document.Number,
-                    Email = customer.Email,
+                    Email = customer.Email.Address,
                     Phone = customer.Phone
                 }, commandType: CommandType.StoredProcedure);
             

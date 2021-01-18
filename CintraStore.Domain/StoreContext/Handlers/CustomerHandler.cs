@@ -8,8 +8,6 @@ using CintraStore.Shared;
 using CintraStore.Shared.Commands;
 using FluentValidator;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CintraStore.Domain.StoreContext.Handlers
 {
@@ -49,7 +47,7 @@ namespace CintraStore.Domain.StoreContext.Handlers
             AddNotifications(customer.Notifications);
 
             if (Invalid)
-                return null;
+                return new CommandResult(false, "Please, fix the fields below", Notifications);
 
             // Persist in the Database
             _repository.Save(customer);
@@ -57,7 +55,11 @@ namespace CintraStore.Domain.StoreContext.Handlers
             // Send a welcome e-mail to the Customer
             _emailService.Send(email.Address, "teste@gmail.com", "Welcome", $"Welcome to our shop {command.FirstName} {command.LastName}!");
 
-            return new CreateCustomerCommandResult(Guid.NewGuid(), name.ToString(), email.Address);
+            return new CommandResult(true, "Welcome to Cintra Store", new {
+                Id = Guid.NewGuid(),
+                Name = name.ToString(),
+                Email = email.Address
+            });
         }
 
         public ICommandResult Handle(AddAddressCommand command)

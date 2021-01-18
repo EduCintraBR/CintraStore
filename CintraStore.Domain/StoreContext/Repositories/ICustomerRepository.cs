@@ -2,7 +2,6 @@
 using CintraStore.Domain.StoreContext.Queries;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CintraStore.Domain.StoreContext.Repositories
 {
@@ -12,5 +11,8 @@ namespace CintraStore.Domain.StoreContext.Repositories
         bool CheckEmail(string email);
         void Save(Customer customer);
         CustomerOrdersCountResult GetCustomerOrdersCountResult(string document);
+        List<ListCustomerQueryResult> Get();
+        GetCustomerQueryResult GetById(Guid id);
+        List<ListCustomerOrdersQueryResult> GetOrders(Guid id);
     }
 }
